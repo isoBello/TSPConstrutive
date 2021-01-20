@@ -34,7 +34,7 @@ def calculate_pseudo_euclidian_dist(x_i, y_i, x_j, y_j):
     xd = x_i - x_j
     yd = y_i - y_j
 
-    rij = math.sqrt(pow(xd, 2) + pow(yd, 2)/10.0)
+    rij = math.sqrt((pow(xd, 2) + pow(yd, 2))/10.0)
     tij = int(rij)
 
     if tij < rij:
