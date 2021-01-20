@@ -35,4 +35,4 @@ def construtive_heuristic(vertices, distances):
             total_distance = total_distance + v[1]
             break
 
-    return total_distance
+    return total_distance, path

@@ -1,11 +1,8 @@
 #!/TSPConstrutive/venv/bin python3.6
 # -*- coding: utf-8 -*-
-import math
 import sys
 import ConstrutiveHeuristic
-from collections import defaultdict
-from os import listdir
-from os.path import isfile, join
+import Distances
 
 
 def create_graph(ffile):
@@ -52,54 +49,19 @@ def infogetter(lhead):
     return qtd_v, dist_type
 
 
-def calculate_distances(lvs, lcoords, type):
-    count = 1
-    distances = defaultdict(list)
-
-    while count <= len(lvs):
-        coords = lcoords.get(count)
-        xi = coords[0]
-        yi = coords[1]
-        for k, v in lcoords.items():
-            if k != count:
-                xj = v[0]
-                yj = v[1]
-                if type == 0:
-                    distances[count].append((k, calculate_euclidian_dist(xi, yi, xj, yj)))
-                else:
-                    distances[count].append((k, calculate_pseudo_euclidian_dist(xi, yi, xj, yj)))
-        count += 1
-    return distances
-
-
-def calculate_euclidian_dist(x_i, y_i, x_j, y_j):
-    xd = x_i - x_j
-    yd = y_i - y_j
-    return int(math.sqrt(pow(xd, 2) + pow(yd, 2)))
-
-
-def calculate_pseudo_euclidian_dist(x_i, y_i, x_j, y_j):
-    xd = x_i - x_j
-    yd = y_i - y_j
-
-    rij = math.sqrt(pow(xd, 2) + pow(yd, 2)/10.0)
-    tij = int(rij)
-
-    if tij < rij:
-        return tij + 1
-    else:
-        return tij
+def write_output(file, dist, path):
+    outfile = open(sys.argv[2] + file, 'w')
+    outfile.write(str(dist))
+    outfile.write("\n")
+    outfile.write(str(path))
 
 
 if __name__ == "__main__":
     lvert, lcoord, d_type = create_graph(sys.argv[1])
 
     if "EUC_2D" in d_type:
-        dists = calculate_distances(lvert, lcoord, 0)
+        dists = Distances.calculate_distances(lvert, lcoord, 0)
     else:
-        dists = calculate_distances(lvert, lcoord, 1)
+        dists = Distances.calculate_distances(lvert, lcoord, 1)
 
-    file = sys.argv[1][16:]
-    answer = ConstrutiveHeuristic.construtive_heuristic(lvert, dists)
-    outfile = open(sys.argv[2] + file, 'w')
-    outfile.write(str(answer))
+    write_output(sys.argv[1][16:], *ConstrutiveHeuristic.construtive_heuristic(lvert, dists))
