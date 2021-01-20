@@ -2,34 +2,38 @@
 # -*- coding: utf-8 -*-
 import math
 import sys
+import ConstrutiveHeuristic
 from collections import defaultdict
+from os import listdir
+from os.path import isfile, join
 
 
 def create_graph():
     vertices = []
     coordenates = {}
+    dist_type = 'type'
+
+    onlyfiles = [f for f in listdir(sys.argv[1]) if isfile(join(sys.argv[1], f))]
 
     try:
-        with open(sys.argv[1]) as file:
-            head = [next(file) for x in range(5)]
-            qtd_vertices, distance_type = infogetter(head)
-            vertices = [x for x in range(1, qtd_vertices+1)]
+        for file in onlyfiles:
+            with open(file) as archive:
+                head = [next(archive) for x in range(5)]
+                qtd_vertices, dist_type = infogetter(head)
+                vertices = [x for x in range(1, qtd_vertices+1)]
 
-            lines = file.readlines()
-            for line in lines[1:]:
-                try:
-                    v, x, y = valuesgetter(line)
-                    coordenates[v] = (x, y)
-                except TypeError:
-                    continue
+                lines = archive.readlines()
+                for line in lines[1:]:
+                    try:
+                        v, x, y = valuesgetter(line)
+                        coordenates[v] = (x, y)
+                    except TypeError:
+                        continue
 
     except FileNotFoundError:
         print("File not found, please try another filename.")
 
-    if "EUC_2D" in distance_type:
-        calculate_distances(vertices, coordenates, 0)
-    else:
-        calculate_distances(vertices, coordenates, 1)
+    return vertices, coordenates, dist_type
 
 
 def valuesgetter(line):
@@ -64,10 +68,11 @@ def calculate_distances(lvs, lcoords, type):
             xj = v[0]
             yj = v[1]
             if type == 0:
-                distances[count].append(calculate_euclidian_dist(xi, yi, xj, yj))
+                distances[count].append((k, calculate_euclidian_dist(xi, yi, xj, yj)))
             else:
-                distances[count].append(calculate_pseudo_euclidian_dist(xi, yi, xj, yj))
+                distances[count].append((k, calculate_pseudo_euclidian_dist(xi, yi, xj, yj)))
         count += 1
+    return distances
 
 
 def calculate_euclidian_dist(x_i, y_i, x_j, y_j):
@@ -90,4 +95,11 @@ def calculate_pseudo_euclidian_dist(x_i, y_i, x_j, y_j):
 
 
 if __name__ == "__main__":
-    create_graph()
+    lvert, lcoord, d_type = create_graph()
+
+    if "EUC_2D" in d_type:
+        dists = calculate_distances(lvert, lcoord, 0)
+    else:
+        dists = calculate_distances(lvert, lcoord, 1)
+
+    ConstrutiveHeuristic.construtive_heuristic(lvert, dists)
