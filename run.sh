@@ -1,20 +1,19 @@
-#!/usr/bin/env bash
+#!/usr/bin/env fish
 
-python3 -m venv ./venv
+python3 -m venv .venv
 
-source "venv/bin/activate.fish"
+source venv/bin/activate.fish
 
 set dirin "Entradas/EUC_2D/"
 
 set dirout "Saidas/"
 
-set dirin "Entradas/att48.tsp"
+set diratt "Entradas/att48.tsp"
 
-time -v python3 Main.py "$dirin" "$dirout"
+# time -v python3 Main.py "$dirin" "$dirout"
 
-#python3 Main.py "$dirin" "$dirout"
-#for file in "$dirin"/*
-#	time -v python3 Main.py "$file" "$dirout"
-#end
+# python3 Main.py "$dirin" "$dirout"
+for file in "$dirin"/*
+	time -v python3 Main.py "$file" "$dirout"
+end
 
-deactivate

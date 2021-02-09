@@ -3,6 +3,7 @@
 import sys
 import ConstrutiveHeuristic
 import Distances
+import VND
 
 
 def create_graph(ffile):
@@ -64,4 +65,8 @@ if __name__ == "__main__":
     else:
         dists = Distances.calculate_distances(lvert, lcoord, 1)
 
-    write_output(sys.argv[1][16:], *ConstrutiveHeuristic.construtive_heuristic(lvert, dists))
+    cost, path = ConstrutiveHeuristic.construtive_heuristic(lvert, dists)
+    s = {cost: path}
+
+    VND(lvert, dists, s)
+    # write_output(sys.argv[1][16:], *ConstrutiveHeuristic.construtive_heuristic(lvert, dists))

@@ -6,7 +6,7 @@ import heapq
 
 def construtive_heuristic(vertices, distances):
     visited = [False] * (len(vertices)+1)
-    u = random.randint(1, 52)
+    u = random.randint(1, len(vertices))
     visited[u] = True
 
     stack = [(0, u)]
