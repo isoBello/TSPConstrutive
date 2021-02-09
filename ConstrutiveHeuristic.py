@@ -36,3 +36,4 @@ def construtive_heuristic(vertices, distances):
             break
 
     return total_distance, path
+
