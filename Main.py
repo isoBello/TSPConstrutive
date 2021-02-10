@@ -68,4 +68,9 @@ if __name__ == "__main__":
     cost, path = ConstrutiveHeuristic.construtive_heuristic(lvert, dists)
     s = {cost: path}
 
-    write_output(sys.argv[1][16:], *VND.VND(lvert, dists, s))
+    if "att" in sys.argv[1]:
+        ofile = "att48.tsp"
+    else:
+        ofile = sys.argv[1][16:]
+
+    write_output(ofile, *VND.VND(lvert, dists, s))
