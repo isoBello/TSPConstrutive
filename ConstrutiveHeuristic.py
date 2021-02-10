@@ -30,9 +30,10 @@ def construtive_heuristic(vertices, distances):
             if not visited[v[0]]:
                 heapq.heappush(stack, (v[1], v[0]))
 
-    for v in distances.get(u):  # Putting the connection between origin > last vertex in path
+    for v in distances.get(path[0]):  # Putting the connection between origin > last vertex in path
         if v[0] == path[-1]:
             total_distance = total_distance + v[1]
+            path.append(path[0])
             break
 
     return total_distance, path

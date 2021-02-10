@@ -10,10 +10,14 @@ set dirout "Saidas/"
 
 set diratt "Entradas/att48.tsp"
 
-# time -v python3 Main.py "$dirin" "$dirout"
+
+#time -v 
+
+python3 Main.py "$diratt" "$dirout"
 
 # python3 Main.py "$dirin" "$dirout"
-for file in "$dirin"/*
-	time -v python3 Main.py "$file" "$dirout"
-end
+#for file in "$dirin"/*
+#	time -v python3 Main.py "$file" "$dirout"
+
+#end
 

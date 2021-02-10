@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from numpy import random
 import heapq
+from copy import deepcopy
 
 
 # Need to garantee that the neighbours will be different
@@ -10,8 +11,8 @@ def VND(vertices, distances, s):
     r = len(neighbours)
     k = 1
 
-    bcost = s.keys()[0]
-    bpath = s.get(0)
+    bcost = list(s.keys())[0]
+    bpath = s.get(bcost)
 
     solutions = list(neighbours.items())
     heapq.heapify(solutions)
@@ -41,58 +42,51 @@ def sk_neighbourhood(vertices, distances, s):
 
 def get_neighbourhood(vertices, distances, s):
     while len(s) < len(vertices):
-        option = random.randint(1, 2)
-        s = switch(option, vertices, distances, s)
+        option = random.randint(1, 3)
+        if option == 1:
+            s = change_position(s, vertices, distances)
+        else:
+            s = move_city(s, vertices, distances)
     return s
 
 
-def switch(n, vertices, distances, s):
-    func = switcher.get(n, "nothing")
-    return func(s, vertices, distances)
-
-
 def change_position(s, vertices, distances):
-    first = random.randint(1, len(vertices))
-    second = random.randint(1, len(vertices))
+    orgpath = list(s.values())[0]
+    path = change(vertices, orgpath)
 
-    while second == first:
-        second = random.randint(1, len(vertices))
-
-    path = s.get(0)[1]
-    ind_first = path.index(first)
-    ind_snd = path.index(second)
-
-    path[ind_first] = second
-    path[ind_snd] = first
+    while True:
+        if path in s.values():
+            path = change(vertices, orgpath)
+        else:
+            break
 
     return calculate_cost(s, distances, path)
 
 
 def move_city(s, vertices, distances):
-    u = random.randint(1, len(vertices))
+    orgpath = list(s.values())[0]
+    path = move(vertices, orgpath)
 
-    path = s.get(0)[1]
-    ind_first = path.index(u)
-    ind_snd = ind_first + 1
+    while True:
+        if path in s.values():
+            path = move(vertices, orgpath)
+        else:
+            break
 
-    temp = path[ind_snd]
-    path[ind_snd] = u
-    path[ind_first] = temp
-
-    return calculate_cost(s, vertices, distances)
+    return calculate_cost(s, distances, path)
 
 
 def calculate_cost(s, distances, path):
     index = 1
     cost = 0
 
-    while index <= len(path):
+    while index < len(path):
         u = path[index-1]
         v = path[index]
 
         for w in distances.get(u):
             if w[0] == v:
-                cost = cost + v[1]
+                cost = cost + w[1]
                 break
 
         index += 1
@@ -101,7 +95,32 @@ def calculate_cost(s, distances, path):
     return s
 
 
-switcher = {
-    1: change_position,
-    2: move_city
-}
+def change(vertices, opath):
+    first = random.randint(1, len(vertices))
+    second = random.randint(1, len(vertices))
+
+    while second == first:
+        second = random.randint(1, len(vertices))
+
+    path = deepcopy(opath)
+    ind_first = path.index(first)
+    ind_snd = path.index(second)
+
+    path[ind_first] = second
+    path[ind_snd] = first
+
+    return path
+
+
+def move(vertices, orpath):
+    u = random.randint(1, len(vertices))
+
+    path = deepcopy(orpath)
+    ind_first = path.index(u)
+    ind_snd = ind_first + 1
+
+    temp = path[ind_snd]
+    path[ind_snd] = u
+    path[ind_first] = temp
+
+    return path
