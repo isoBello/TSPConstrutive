@@ -117,9 +117,15 @@ def move(vertices, orpath):
 
     path = deepcopy(orpath)
     ind_first = path.index(u)
-    ind_snd = ind_first + 1
 
-    temp = path[ind_snd]
+    try:
+        ind_snd = ind_first + 1
+        temp = path[ind_snd]
+
+    except IndexError:
+        ind_snd = ind_first - 1
+        temp = path[ind_snd]
+
     path[ind_snd] = u
     path[ind_first] = temp
 
