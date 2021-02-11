@@ -58,7 +58,8 @@ def write_output(file, dist, path):
 
 
 if __name__ == "__main__":
-    lvert, lcoord, d_type = create_graph(sys.argv[1])
+    # lvert, lcoord, d_type = create_graph(sys.argv[1])
+    lvert, lcoord, d_type = create_graph("Entradas/test.tsp")
 
     if "EUC_2D" in d_type:
         dists = Distances.calculate_distances(lvert, lcoord, 0)
@@ -68,9 +69,10 @@ if __name__ == "__main__":
     cost, path = ConstrutiveHeuristic.construtive_heuristic(lvert, dists)
     s = {cost: path}
 
-    if "att" in sys.argv[1]:
-        ofile = "att48.tsp"
-    else:
-        ofile = sys.argv[1][16:]
-
-    write_output(ofile, *VND.VND(lvert, dists, s))
+    a, b = VND.VND(lvert, dists, s)
+    # if "att" in sys.argv[1]:
+    #     ofile = "att48.tsp"
+    # else:
+    #     ofile = sys.argv[1][16:]
+    #
+    # write_output(ofile, *VND.VND(lvert, dists, s))
