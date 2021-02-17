@@ -1,9 +1,10 @@
 #!/TSPConstrutive/venv/bin python3.6
 # -*- coding: utf-8 -*-
 import sys
-import ConstrutiveHeuristic
+# import ConstrutiveHeuristic
 import Distances
-import VND
+# import VND
+import PSO
 
 
 def create_graph(ffile):
@@ -13,7 +14,7 @@ def create_graph(ffile):
 
     try:
         with open(ffile) as archive:
-            head = [next(archive) for x in range(6)]
+            head = [next(archive) for _ in range(6)]
             qtd_vertices, dist_type = infogetter(head)
             vertices = [x for x in range(1, qtd_vertices+1)]
 
@@ -42,6 +43,9 @@ def valuesgetter(line):
 
 
 def infogetter(lhead):
+    qtd_v = 0
+    dist_type = "Null"
+
     for inf in lhead:
         if 'DIMENSION' in inf:
             qtd_v = int(inf.split(": ")[1])
@@ -57,19 +61,31 @@ def write_output(file, dist, path):
     outfile.write(str(path))
 
 
+def create_matrix(vertices, distances):
+    cities_matrix = [[-1 for _ in range(len(vertices) + 1)] for _ in range(len(vertices) + 1)]
+    for k, v in distances.items():
+        for pair in v:
+            cities_matrix[k][pair[0]] = pair[1]
+    return cities_matrix
+
+
 if __name__ == "__main__":
     lvert, lcoord, d_type = create_graph(sys.argv[1])
+    # lvert, lcoord, d_type = create_graph("Entradas/test.tsp")
     if "EUC_2D" in d_type:
         dists = Distances.calculate_distances(lvert, lcoord, 0)
     else:
         dists = Distances.calculate_distances(lvert, lcoord, 1)
 
-    cost, path = ConstrutiveHeuristic.construtive_heuristic(lvert, dists)
-    s = {cost: path}
+    cities = create_matrix(lvert, dists)
+    ncities = len(lvert) + 1
 
     if "att" in sys.argv[1]:
         ofile = "att48.tsp"
     else:
         ofile = sys.argv[1][16:]
 
-    write_output(ofile, *VND.VND(lvert, dists, s))
+    write_output(ofile, *PSO.inicialize(cities, ncities))
+
+    # cost, path = ConstrutiveHeuristic.construtive_heuristic(lvert, dists)
+    # s = {cost: path}
